@@ -1,0 +1,1 @@
+SELECT flight_id FROM bookings WHERE id = @id FOR UPDATE

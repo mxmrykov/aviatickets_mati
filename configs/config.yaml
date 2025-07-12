@@ -1,0 +1,14 @@
+database:
+  host: "db_main"
+  port: 5432
+  user: "avia_user"
+  password: "avia_pass"
+  name: "aviatickets"
+  sslmode: "disable"
+
+telegram:
+  bot_token: "8144719927:AAGsygfyeUg7-dEautAZ2ysmYdoAzpJP5Fk"
+  debug: true
+
+server:
+  port: ":8080"

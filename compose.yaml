@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  db_main:
+    container_name: db_main
+    image: postgres:13
+    environment:
+      POSTGRES_USER: avia_user
+      POSTGRES_PASSWORD: avia_pass
+      POSTGRES_DB: aviatickets
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./migrations:/flyway/sql
+    networks:
+      - avia_network
+
+  flyway:
+    image: flyway/flyway
+    command: -url=jdbc:postgresql://db_main:5432/aviatickets -user=avia_user -password=avia_pass -connectRetries=60 migrate
+    volumes:
+      - ./migrations:/flyway/sql
+    depends_on:
+      - db_main
+    networks:
+      - avia_network
+
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db_main
+      - flyway
+    environment:
+      - DB_HOST=db_main
+      - DB_PORT=5432
+      - DB_USER=avia_user
+      - DB_PASSWORD=avia_pass
+      - DB_NAME=aviatickets
+      - TELEGRAM_BOT_TOKEN=8144719927:AAGsygfyeUg7-dEautAZ2ysmYdoAzpJP5Fk
+      - ADMIN_KEY=123
+    networks:
+      - avia_network
+
+networks:
+  avia_network:
+    driver: bridge
+
+volumes:
+  postgres_data:
